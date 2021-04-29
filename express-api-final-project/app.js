@@ -29,12 +29,38 @@ const Post = sequelize.import("./models/posts.js");
 // Sad Path: None
 app.get("/posts", function(req, res){
 
+    Post.findAll().then(function(element){
+        res.status(200);
+        res.json(element);
+    });
 });
 
 // Create a post
 // Happy Path: creates the post item (Status 201 - returns copy of created post)
 // Sad Path: none
 app.post("/posts", function(req, res){
+    let title = req.body.title;
+    let url = req.body.url;
+
+    if(title != null && url != null)
+    {
+        let NP = Post.build({
+            title: title,
+            url: url,
+        });
+
+        NP.save().then(postitem => {
+            res.status(201);
+            res.json(postitem);
+        })
+        .catch(error => {
+            res.json({"message": error});
+        })
+    }
+    else
+    {
+        res.status(422).json({"message": "error"});
+    }
 
 });
 
@@ -43,6 +69,20 @@ app.post("/posts", function(req, res){
 // Sad Path: post does not exist (Status 404 - empty JSON)
 app.patch("/posts/:id/upvote", function(req, res){
 
+    Post.findByPk(req.params.id).then((element)=>{
+        if(element != null)
+        {
+            element.points + 1;
+            element.save().then(function(){
+                res.status(204);
+                res.json(element);
+            })
+        }
+        else
+        {
+            res.status(404);
+        }
+    });
 });
 
 // Downvote a post
@@ -50,6 +90,21 @@ app.patch("/posts/:id/upvote", function(req, res){
 // Sad Path: post does not exist (Status 404 - empty JSON)
 app.patch("/posts/:id/downvote", function(req, res){
 
+    Post.findByPk(req.params.id).then((element)=>{
+        if(element != null)
+        {
+            element.points - 1;
+            element.save().then(function()
+            {
+              res.status(204);
+              res.json(element);
+            })
+        }
+        else
+        {
+            res.status(404);
+        }
+    });
 });
 
 // STOP: Don't change anything below this line
