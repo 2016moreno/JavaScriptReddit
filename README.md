@@ -28,7 +28,7 @@
     <img src="assets/reddit.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Basic Scoial News Website</h3>
+  <h3 align="center">Basic Social News Website</h3>
 
   <p align="center">
     Final Project that demonstrates building an API and a simple frontend to create a fullstack web application. This simple project shows how to make a basic social news wesbite aka Reddit clone.  
